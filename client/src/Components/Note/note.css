@@ -1,0 +1,93 @@
+.noteBox{
+    /* position:absolute; */
+    /*
+    top:10%;
+    
+    right:50%;
+    */
+    /* margin-left: auto;
+margin-right: auto; */
+/* left:50%; */
+     /* margin:auto; */
+     /* margin-top: 18%;
+     margin-left: 24%;
+    
+    justify-content: center; */
+    /* padding: 2%; */
+    display: flex;
+    align-items: center;
+}
+
+.card {
+    
+    padding: 2% !important;
+    /* border:1px solid; */
+}
+/* .card-body{
+    margin-top: -4%;
+    margin-left: 2%;
+    padding: 0%;
+} */
+/* .card-title{
+    border-bottom:1px solid;
+} */
+
+.noteBox input{
+     border:none;
+    outline: none;
+    /* height:30px; */
+    /* padding: 2%; */
+    float:left;
+    margin-left: 3%;
+    margin-top: 2%;
+    /* width:90%;  */
+     /* margin-bottom: 2%; */
+}
+/* .card-text p{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+} */
+
+.toolbar{
+    display:flex;
+    margin-left:5%;
+    /* padding: 2%; */
+    justify-content: left;
+}
+.toolbar .icon{
+    width:20px;
+    height: 25px;
+    margin-right: 5%;
+
+}
+
+.addNote{
+    position: relative;
+    float: right;
+    margin-right: 10px;
+    color:blue;
+    border: none;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    outline: none;
+}
+.noteBox #pin{
+    float: right;
+    margin-top:2%;
+    margin-right: 10px;
+    width:30px;
+    height: 25px;
+    /* right:20px; */
+}
+.card-body{
+    padding:0%;
+}
+
+
+/* .modal-open{
+    position:absolute;
+   top: 60%;
+} */
+
