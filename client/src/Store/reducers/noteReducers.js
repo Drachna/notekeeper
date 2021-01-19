@@ -1,5 +1,7 @@
 import {
-    NOTE_CREATED
+    NOTE_CREATED,
+    ADD_REMINDER,
+    ADD_LABEL
 } from '../actionTypes'
 
 const initialState = {
@@ -27,7 +29,18 @@ const noteReducer = (state = initialState, action) => {
                 label: action.payload.label,
                 listItems: action.payload.listItems
             }
+        case ADD_REMINDER:
+            return {
+                ...state,
+                reminder:[...state.reminder,action.payload]
+            }
 
+
+            case ADD_LABEL:
+                return {
+                    ...state,
+                    label:[...state.label,action.payload]
+                }
         default:
             return state
     }

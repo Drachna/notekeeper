@@ -4,23 +4,28 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import {connect} from 'react-redux'
+import { fetchNotes } from '../../Store/actions/handleNoteActions';
+
 
 class DisplayNotes extends Component {
+  componentDidMount(){
+    // this.props.fetchNotes()
+  }
   state = {
     notes: [{ a: 'bv' },{ a: 'cv' }]
   }
 
   renderNotes = () => {
-    return this.state.notes.map((note) => {
-      // console.log('in render',note);
+    return this.props.notes.map((note) => {
       return (
         <Card variant="outlined">
           <CardContent>
             <Typography color="textSecondary" gutterBottom>
-             {note.a}
+             {note.title}
             </Typography>
             <Typography variant="h5" component="h2">
-              fghdf
+            {note.content}
             </Typography>
             <Typography color="textSecondary">
               adjective
@@ -43,10 +48,21 @@ class DisplayNotes extends Component {
     return (
       <div className="grid">
         {this.renderNotes()}
-
       </div>
     );
   }
 }
 
-export default DisplayNotes;
+const mapStateToProps=(state)=>{
+  return{
+    notes:state.handleNote.notes
+  }
+}
+
+const mapDispatchToProps=(dispatch)=>{
+  return {
+    fetchNotes:()=>dispatch(fetchNotes())
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(DisplayNotes);

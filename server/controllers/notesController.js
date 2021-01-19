@@ -1,43 +1,30 @@
 const Notes = require('../models/notes')
+const path = require('path');
 
 module.exports.addNotes = async (req, res) => {
-    const url=req.protocol+"://"+req.hostname
-    try {
-        // console.log(req.body);
-        let sampleFile;
-        let uploadPath;
-      
+    const url = req.protocol + "://" + req.hostname
+    try {        
         if (!req.files || Object.keys(req.files).length === 0) {
-          
-          req.body.user = req.user_id
-
+            req.body.user = req.user_id
             const note = new Notes(req.body)
             await note.save()
-            res.status(200).send("Added")
+            return res.status(200).send(note)
         }
-        sampleFile = req.files.sampleFile;
-         uploadPath = __dirname + '/Data/' + sampleFile.name;
-
-  // Use the mv() method to place the file somewhere on your server
-  sampleFile.mv(uploadPath, async function(err) {
-    if (err)
-      console.log(err);
-    else{
-        req.body.user = req.user_id
-        req.body.img=url+'/controllers/Data/'+sampleFile.name;
-        const note = new Notes(req.body)
-        await note.save()
-        res.status(200).send("Added")
-    }
-    
-
-  });
-        
-        
+        let imageFile = req.files.imageToAdd;        
+        imageFile.mv(path.resolve(__dirname,'../images',imageFile.name), async function (err) {
+            if (err)
+                console.log(err);
+            else {
+                req.body.user = req.user_id
+                req.body.img = url + 'images' + imageFile.name;
+                const note = new Notes(req.body)
+                await note.save()
+                res.status(200).send(note)
+            }
+        });
     } catch (e) {
         console.error(e)
     }
-
 }
 
 
@@ -52,7 +39,6 @@ module.exports.updateNotes = async (req, res) => {
             list_item: req.body.list_item
         })
         res.status(200).send("update successful")
-        // console.log(note);
     } catch (e) {
         console.error(e)
     }
@@ -61,8 +47,8 @@ module.exports.updateNotes = async (req, res) => {
 
 
 module.exports.findNotes = async (req, res) => {
-    // console.log(id);
-    const notes = await Notes.find({ user: req.user_id })
+    // const notes = await Notes.find({ user: req.user_id })
+    const notes = await Notes.find()
     res.status(200).send(notes)
 }
 
