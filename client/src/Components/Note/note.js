@@ -16,7 +16,7 @@ class Note extends Component {
   state = {
     title: '',
     content: '',
-    image: null,
+    imageToAdd: null,
     archive: false,
     pinned: false,
     listItems: [],
@@ -48,7 +48,11 @@ class Note extends Component {
       show: e.currentTarget.id
     })
   }
-
+ setimage=(e)=>{
+   this.setState({
+     [e.target.name]:e.target.files[0]
+   })
+ }
   closePopOver = () => {
     this.setState({
       anchorEl: null
@@ -67,16 +71,22 @@ class Note extends Component {
   }
 
   handleClick = () => {
+    var formData = new FormData();
     const data = {
       title: this.state.title,
       content: this.state.content,
-      image: this.state.image,
+      imageToAdd: this.state.imageToAdd,
       archive: this.state.archive,
       pinned: this.state.pinned,
       listItems: this.state.listItems,
     }
+    formData.append('title',data.title)
+    formData.append('content',data.content)
+    formData.append('imageToAdd',data.imageToAdd)
+
+
 // console.log(this.state,data);
-    this.props.addNote(data)
+    this.props.addNote(formData)
   }
 
   render() {
@@ -131,12 +141,13 @@ class Note extends Component {
                     Add image
                   </Tooltip>
                 }>
-                  {/* <div className="image-upload">
-                  <label htmlFor="file-input"> */}
+                  <div className="imageset">
+                  
+                <input id="file-input" name="imageToAdd" className="image-upload" onChange={this.setimage} type="file" />
+                <label htmlFor="file-input">
                 <MdImage id="image" className="icon"  />
-                {/* </label>
-                <input id="file-input" onChange={this.handleChange} type="file" />
-                </div> */}
+                </label>
+                </div>
               </OverlayTrigger>
 
               <OverlayTrigger

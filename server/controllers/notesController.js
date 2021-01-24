@@ -2,14 +2,17 @@ const Notes = require('../models/notes')
 const path = require('path');
 
 module.exports.addNotes = async (req, res) => {
+    console.log('in here')
     const url = req.protocol + "://" + req.hostname
     try {        
         if (!req.files || Object.keys(req.files).length === 0) {
+            console.log(req.files)
             req.body.user = req.user_id
             const note = new Notes(req.body)
             await note.save()
             return res.status(200).send(note)
         }
+        console.log(req.files)
         let imageFile = req.files.imageToAdd;        
         imageFile.mv(path.resolve(__dirname,'../images',imageFile.name), async function (err) {
             if (err)

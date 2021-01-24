@@ -16,6 +16,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Note from '../Note/note'
 import DisplayNotes from '../DisplayNotes/DisplayNotes'
+import Button from '@material-ui/core/Button';
 
 const drawerWidth = 240;
 
@@ -68,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   toolbar: {
-    // flex:'30%',
+   
     display: 'flex',
     alignItems: 'center',
     // justifyContent: 'flex-end',
@@ -86,6 +87,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
     //  ...theme.mixins.toolbar,
 
+  },
+  toolbarButtons: {
+    marginLeft: 'auto',
+    color:'white'
   },
 }));
 
@@ -126,6 +131,11 @@ export default function SideDrawer() {
           <Typography variant="h6" noWrap>
             Keeps
           </Typography>
+          <Button color="white" className={classes.toolbarButtons}>
+
+            log out
+            
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer

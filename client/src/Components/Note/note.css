@@ -91,6 +91,14 @@ margin-right: auto; */
    top: 60%;
 } */
 
-.image-upload>input{
+.image-upload{
     display: none;
+}
+
+.imageset{
+    margin-right: 5%;
+}
+.display-input{
+    display: 'none';
+   
 }

@@ -8,7 +8,8 @@ import {
 
 const initialState = {
     status: 'NOT_LOGGED_IN',
-    errorMessage: ''
+    failed:false,
+    errorMessage:null
 }
 
 const authReducer = (state = initialState, action) => {
@@ -37,8 +38,9 @@ const authReducer = (state = initialState, action) => {
 
         case REGISTER_FAILURE:
             return {
-                tatus: action.payload.status,
-                errorMessage: action.payload.message
+                status:'note',
+                failed:true,
+                errorMessage: 'afgdfs'
             }
         default:
             return state

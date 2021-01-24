@@ -22,3 +22,4 @@ export const DELETE_NOTE_FAILED='UPDATE_NOTE_FAILED'
 
 export const  ADD_REMINDER='ADD_REMINDER'
 export const  ADD_LABEL='ADD_LABEL'
+
