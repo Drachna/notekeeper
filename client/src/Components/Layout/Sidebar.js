@@ -197,12 +197,9 @@ export default function SideDrawer() {
             <Note />
 
           </Grid>
-          <Grid item xs={12} >
-            <DisplayNotes />
-
-          </Grid>
+          
         </Grid>
-
+        <DisplayNotes />
       </main>
     </div>
   );

@@ -57,6 +57,10 @@ class Login extends React.Component {
         password: this.state.password
       }
       this.props.login(data)
+      this.props.history.push('/displayNotes')
+      if (this.props.status === 'LOGGED_IN'){
+        
+      }
 
     }
     else {

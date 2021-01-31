@@ -7,39 +7,51 @@ import {
 const initialState = {
     title: '',
     content: '',
-    image: '',
+    imageToAdd: '',
     archive: false,
     pinned: false,
-    reminder: [],
-    label: [],
-    listItems: []
+    reminder: '',
+    labels: [],
+    listItems: [],
+    editNote:false,
+    noteToBeEdited:null
 }
 
 const noteReducer = (state = initialState, action) => {
     switch (action.type) {
-        case NOTE_CREATED:
+        case 'NOTE_EDITED':
+
             return {
-                ...state,
-                title: action.payload.title,
-                content: action.payload.content,
-                image: action.payload.image,
-                archive: action.payload.archive,
-                pinned: action.payload.pinned,
-                reminder: action.payload.reminder,
-                label: action.payload.label,
-                listItems: action.payload.listItems
+                
+                noteToBeEdited:action.payload,
+                 editNote:true
+                // title: action.payload.title,
+                // content: action.payload.content,
+                // imageToAdd: action.payload.imageToAdd,
+                // archive: action.payload.archive,
+                // pinned: action.payload.pinned,
+                // reminder: action.payload.reminder,
+                // labels: action.payload.labels,
+                // listItems: action.payload.listItems,
+               
             }
         case ADD_REMINDER:
+           
             return {
                 ...state,
-                reminder:[...state.reminder,action.payload]
+                reminder:action.payload.reminder
             }
 
 
             case ADD_LABEL:
+                console.log(state);
                 return {
                     ...state,
-                    label:[...state.label,action.payload]
+                    labels:action.payload.label
+                }
+            case 'NOTE_RESET':
+                return{
+                    state:initialState
                 }
         default:
             return state

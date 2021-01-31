@@ -35,13 +35,13 @@ module.exports.addNotes = async (req, res) => {
 
 module.exports.updateNotes = async (req, res) => {
     try {
-
-        await Notes.updateOne({ _id: req.body._id }, {
+console.log('in update',req.body);
+        const note=await Notes.updateOne({ _id: req.body._id }, {
             title: req.body.title,
             content: req.body.content,
             list_item: req.body.list_item
         })
-        res.status(200).send("update successful")
+        res.status(200).send(note)
     } catch (e) {
         console.error(e)
     }
@@ -51,7 +51,7 @@ module.exports.updateNotes = async (req, res) => {
 
 module.exports.findNotes = async (req, res) => {
     // const notes = await Notes.find({ user: req.user_id })
-    const notes = await Notes.find()
+    const notes = await Notes.find({ user: req.user_id })
     res.status(200).send(notes)
 }
 

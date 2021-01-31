@@ -9,17 +9,15 @@ class Reminder extends Component {
     reminder: ''
   }
   handleChange = (e) => {
-
-    this.setState({
+console.log(e.target.value);
+     this.setState({
       reminder: e.target.value
     })
 
     console.log(this.state);
   }
-  handleClick = () => {
-    // console.log(this.state);
-    this.props.addReminder(this.state)
-    // console.log(this.props);
+  handleClick = async() => {
+    await this.props.setReminder(this.state.reminder) 
   }
 
   render() {
@@ -31,7 +29,7 @@ class Reminder extends Component {
               id="datetime-local"
               label="Choose Date and Time"
               type="datetime-local"
-              defaultValue="2017-05-24T10:30"
+              // defaultValue="2017-05-24T10:30"
 
               onChange={this.handleChange}
               InputLabelProps={{
@@ -53,9 +51,9 @@ const mapStateToProps = (state) => {
     reminder: state.note.reminder
   }
 }
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch,ownProps) => {
   return {
-    addReminder: (data) => dispatch(addReminder(data))
+    // addReminder: (ownProps) => dispatch(addReminder(ownProps))
   }
 }
 

@@ -1,24 +1,31 @@
-import {FETCH_NOTES} from '../actionTypes'
+import { FETCH_NOTES, NOTE_CREATED } from '../actionTypes'
 
-const initialState={
-    notes:[],
-    errorMessage:''
+const initialState = {
+    notes: [],
+    errorMessage: ''
 }
 
-const handleNotes=(state=initialState,action)=>{
+const handleNotesReducer = (state = initialState, action) => {
 
-    switch(action.type){
+    switch (action.type) {
+
         case FETCH_NOTES:
+            // console.log('in here');
             return {
                 ...state,
-                notes:[...state.notes,action.payload]
+                notes: action.payload
             }
-        
 
+        case NOTE_CREATED:
+            return {
+                ...state,
+                notes: [...state.notes, action.payload]
+            }
         default:
+            console.log('in here');
             return state
     }
 
 }
 
-export default handleNotes
+export default handleNotesReducer

@@ -10,20 +10,49 @@ import Colors from '../Colors/Colors'
 import Reminder from '../Reminder/Reminder'
 import Labels from '../Labels/Labels';
 import './note.css'
-import { addNote } from '../../Store/actions/noteActions';
+import { addNote, saveEditedNote } from '../../Store/actions/handleNoteActions';
 import { connect } from 'react-redux'
+import ListItems from '../ListItems/ListItems';
 class Note extends Component {
-  state = {
-    title: '',
-    content: '',
-    imageToAdd: null,
-    archive: false,
-    pinned: false,
-    listItems: [],
-    anchorEl: null,
-    show: null
+
+  constructor(props) {
+    super(props);
+    this.intialState = {
+      title: '',
+      content: '',
+      imageToAdd: '',
+      archive: '',
+      pinned: '',
+      listItems: [],
+      anchorEl: null,
+      show: false
+    }
+
+    console.log(this.props);
+    if (this.props.noteToBeEdited !== null) {
+      this.state = props.noteToBeEdited
+      console.log('in if');
+    }
+    else {
+      this.state = this.intialState
+      console.log('in else', this.state);
+    }
+
   }
 
+  // this.initialState = {
+  //   title: this.props.title,
+  //   content: this.props.content,
+  //   imageToAdd: this.props.imageToAdd,
+  //   archive: this.props.archive,
+  //   pinned: this.props.pinned,
+  //   // reminder:this.props.reminder,
+  //   // labels:this.props.labels,
+  //   listItems: this.props.listItems,
+  //   anchorEl: null,
+  //   show: false
+  // }
+  // state = this.initialState
   toggleArchive = () => {
     this.setState({
       archive: !this.state.archive
@@ -36,8 +65,8 @@ class Note extends Component {
     })
   }
 
-  handleChange = (e) => {
-    this.setState({
+  handleChange = async (e) => {
+    await this.setState({
       [e.target.id]: e.target.value
     })
   }
@@ -48,48 +77,91 @@ class Note extends Component {
       show: e.currentTarget.id
     })
   }
- setimage=(e)=>{
-   this.setState({
-     [e.target.name]:e.target.files[0]
-   })
- }
+  setimage = (e) => {
+    this.setState({
+      [e.target.name]: e.target.files[0]
+    })
+  }
   closePopOver = () => {
     this.setState({
       anchorEl: null
     })
   }
 
-  renderPopOver = () => {
-    if (this.state.show === 'reminder')
-      return <Reminder />
-
-    else if (this.state.show === 'color')
-      return <Colors />
-
-    else if (this.state.show === 'label')
-      return <Labels />
+  setReminder = (data) => {
+    this.setState({
+      reminder: data
+    })
   }
 
-  handleClick = () => {
-    var formData = new FormData();
+  setLabel = (data) => {
+    this.setState({
+      labels: data
+    })
+  }
+
+  setColor = (data) => {
+    this.setState({
+      color: data
+    })
+  }
+
+  addToList = (todo) => {
     const data = {
-      title: this.state.title,
-      content: this.state.content,
-      imageToAdd: this.state.imageToAdd,
-      archive: this.state.archive,
-      pinned: this.state.pinned,
-      listItems: this.state.listItems,
+      done: false,
+      todo: todo
     }
-    formData.append('title',data.title)
-    formData.append('content',data.content)
-    formData.append('imageToAdd',data.imageToAdd)
+    let listItems = [...this.state.listItems, data]
+    this.setState({
+      listItems
+    })
+  }
+  renderPopOver = () => {
+    if (this.state.show === 'reminder')
+      return <Reminder setReminder={this.setReminder} />
 
+    else if (this.state.show === 'color')
+      return <Colors setColor={this.setColor} />
 
-// console.log(this.state,data);
-    this.props.addNote(formData)
+    else if (this.state.show === 'label')
+      return <Labels setLabel={this.setLabel} />
+  }
+
+  handleClick = async () => {
+
+    if (this.props.editNote) {
+
+      await this.props.saveEditedNote(this.state)
+    }
+    else {
+      var formData = new FormData();
+      const data = {
+        title: this.state.title,
+        content: this.state.content,
+        imageToAdd: this.state.imageToAdd,
+        archive: this.state.archive,
+        pinned: this.state.pinned,
+        listItems: this.state.listItems,
+      }
+      console.log(this.props, 'from notes');
+      formData.append('title', data.title)
+      formData.append('content', data.content)
+      formData.append('imageToAdd', data.imageToAdd)
+      formData.append('archive', data.archive)
+      formData.append('pinned', data.pinned)
+      formData.append('reminder', this.props.reminder)
+      formData.append('labels', this.props.labels)
+
+      console.log(this.props);
+
+      await this.props.addNote(formData)
+
+      this.setState(() => this.initialState)
+    }
   }
 
   render() {
+    console.log(this.state, 'state');
     const open = Boolean(this.state.anchorEl);
     const id = open ? 'simple-popover' : undefined;
     return (
@@ -98,7 +170,7 @@ class Note extends Component {
         <Card style={{ width: "30rem" }}>
 
           <Card.Title>
-            <input className="title" type="text" id="title" placeholder="Title" onChange={this.handleChange}></input>
+            <input className="title" type="text" value={this.state.title} id="title" autoComplete="off" placeholder="Title" onChange={this.handleChange}></input>
 
             <OverlayTrigger
               overlay={
@@ -106,14 +178,40 @@ class Note extends Component {
                   Pin note
                 </Tooltip>
               }>
-              <RiPushpin2Line id="pin" />
+              <RiPushpin2Line id="pin" style={this.state.pinned ? { background: 'black' } : { background: 'white' }} onClick={this.togglePin} />
             </OverlayTrigger>
           </Card.Title>
 
           <Card.Text >
-            <input type="text" placeholder="Content" id="content" onChange={this.handleChange}></input>
+            <input type="text" className="title" autoComplete="off" placeholder="Content" id="content" value={this.state.content} onChange={this.handleChange}></input>
           </Card.Text>
           <Card.Body >
+            <div>
+              {/* <ul className="lists"> */}
+             { this.state.listItems.map((item,index)=>{
+                return <ListItems key={index} toggleStatus={this.toggleStatus} deleteTodo={this.deleteTodo} itemData={item}/>
+              })}
+              {/* </ul> */}
+              </div>
+            <div >
+
+              <div style={{
+                display: 'inline-block',
+                marginRight: '8px',
+                borderRadius: '25px',
+                padding: '4px',
+                background: '#dee2e6'
+              }}>{this.state.labels}</div>
+              <div style={{
+                display: 'inline-block',
+                marginRight: '8px',
+                borderRadius: '25px',
+                padding: '4px',
+                background: '#dee2e6'
+              }}>{this.state.reminder}</div>
+
+               
+            </div>
 
             <div className="toolbar">
 
@@ -141,12 +239,12 @@ class Note extends Component {
                     Add image
                   </Tooltip>
                 }>
-                  <div className="imageset">
-                  
-                <input id="file-input" name="imageToAdd" className="image-upload" onChange={this.setimage} type="file" />
-                <label htmlFor="file-input">
-                <MdImage id="image" className="icon"  />
-                </label>
+                <div className="imageset">
+
+                  <input id="file-input" name="imageToAdd" className="image-upload" onChange={this.setimage} type="file" />
+                  <label htmlFor="file-input">
+                    <MdImage id="image" className="icon" />
+                  </label>
                 </div>
               </OverlayTrigger>
 
@@ -201,7 +299,7 @@ class Note extends Component {
                     Add to list
                   </Tooltip>
                 }>
-                <MdList id="list" className="icon" />
+                <MdList id="list" className="icon" onClick={()=>{this.addToList(this.state.content)}} />
               </OverlayTrigger>
 
               <MdAddCircle className="addNote justify-end" onClick={this.handleClick}/>
@@ -224,6 +322,7 @@ class Note extends Component {
               </Popover>
 
             </div>
+
           </Card.Body >
         </Card>
       </div>
@@ -233,13 +332,24 @@ class Note extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    title: state.title
+    // title: state.note.title,
+    // content: state.note.content,
+    reminder: state.note.reminder,
+    labels: state.note.labels,
+    // imageToAdd: state.note.imageToAdd,
+    // pinned: state.note.pinned,
+    // archive: state.note.archive,
+    // listItems: state.note.listItems,
+    noteToBeEdited: state.note.noteToBeEdited,
+    editNote: state.note.editNote
+
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addNote: (data) => dispatch(addNote(data))
+    addNote: (data) => dispatch(addNote(data)),
+    saveEditedNote: (data) => dispatch(saveEditedNote(data))
   }
 }
 

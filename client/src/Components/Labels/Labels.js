@@ -14,12 +14,11 @@ class Labels extends Component {
     })
   }
 
-  handleClick = () => {
+  handleClick = async() => {
     console.log(this.state);
-    this.props.addLabel(this.state)
-    this.setState({
-      label: ''
-    })
+    // await this.props.addLabel(this.state)
+    await this.props.setLabel(this.state.label)
+    
     console.log(this.props);
   }
 
@@ -49,12 +48,12 @@ class Labels extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    label: state.note.label
+    labels: state.note.labels
   }
 }
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch,ownProps) => {
   return {
-    addLabel: (data) => dispatch(addLabel(data))
+    addLabel: (ownProps) => dispatch(addLabel(ownProps))
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Labels);

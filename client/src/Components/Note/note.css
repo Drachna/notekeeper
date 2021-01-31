@@ -32,7 +32,7 @@ margin-right: auto; */
     border-bottom:1px solid;
 } */
 
-.noteBox input{
+.noteBox .title{
      border:none;
     outline: none;
     /* height:30px; */
@@ -82,7 +82,7 @@ margin-right: auto; */
     /* right:20px; */
 }
 .card-body{
-    padding:0%;
+    padding:0% !important;
 }
 
 
@@ -102,3 +102,4 @@ margin-right: auto; */
     display: 'none';
    
 }
+

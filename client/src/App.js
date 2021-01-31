@@ -5,6 +5,7 @@ import Login from './Components/Login/Login';
 import Register from './Components/Register/Register';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import TransitionsModal from './Components/Modal/EditNote';
 
 class App extends Component {
   
@@ -16,7 +17,8 @@ class App extends Component {
         <Route path='/register' component={Register}></Route>
         <Route path='/displayNotes' component={SideDrawer}></Route>
       </Switch>
-
+{/* <SimpleModal/> */}
+{/* <TransitionsModal/> */}
     </div>
     );
   }
