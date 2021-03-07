@@ -19,31 +19,43 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 status: action.payload.status
             }
-
-        case LOGIN_SUCCESS:
+        case 'LOGGED_OUT':
             return {
+                
+                ...state,
+                status:action.payload.status
+            }
+        case LOGIN_SUCCESS:
+            console.log(state);
+            return {
+                ...state,
                 status: action.payload.status,
                 errorMessage: null
             }
         case LOGIN_FAILURE:
             return {
+                ...state,
                 status: action.payload.status,
-                errorMessage: action.payload.message
+                errorMessage: action.payload
             }
         case REGISTER_SUCCESS:
             return {
+                ...state,
                 status: action.payload.status,
                 errorMessage: null
             }
 
         case REGISTER_FAILURE:
             return {
+                ...state,
                 status:'note',
                 failed:true,
                 errorMessage: 'afgdfs'
             }
-        default:
-            return state
+        default:{
+             
+            return {...state}
+        }
     }
 
 }

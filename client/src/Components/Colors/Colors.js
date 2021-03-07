@@ -1,20 +1,23 @@
 import React from 'react';
 import { Card } from 'react-bootstrap'
-import {BsCircleFill } from "react-icons/bs";
+import {BsCircleFill ,BsCircle} from "react-icons/bs";
 import './colors.css'
-const Colors = () => {
+const Colors = (props) => {
     return (
         <div>
+            {/* #ecb2b2 */}
             <Card style={{ width: '65px' }}>
                 <Card.Body>
-                    <BsCircleFill className="colors" style={{ color: 'Blue' }} />
-                    <BsCircleFill className="colors" style={{ color: 'Yellow' }} />
-                    <BsCircleFill className="colors" style={{ color: 'Red' }} />
+                <BsCircle className="colors"  onClick={()=>props.setColor('white')}/>
+                    <BsCircleFill className="colors" style={{ color: '#cfcfff' }} onClick={()=>props.setColor('#cfcfff')}/>
+                    <BsCircleFill className="colors" style={{ color: '#eaea92' }}  onClick={()=>props.setColor('#eaea92')}/>
+                   
                 </Card.Body>
                 <Card.Body>
-                    <BsCircleFill className="colors" style={{ color: 'Pink' }} />
-                    <BsCircleFill className="colors" style={{ color: 'Black' }} />
-                    <BsCircleFill className="colors" style={{ color: 'Green' }} />
+                <BsCircleFill className="colors" style={{ color: '#ecb2b2' }} onClick={()=>props.setColor('#ecb2b2')}/>
+                    <BsCircleFill className="colors" style={{ color: 'Pink' }} onClick={()=>props.setColor('pink')}/>
+                    {/* <BsCircleFill className="colors" style={{ color: '#fbc96c' }} onClick={()=>props.setColor('#fbc96c')}/> */}
+                    <BsCircleFill className="colors" style={{ color: '#8fd48f' }} onClick={()=>props.setColor('#8fd48f')}/>
                 </Card.Body>
             </Card>
         </div>

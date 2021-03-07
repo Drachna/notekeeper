@@ -39,7 +39,7 @@ module.exports.login_post = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        res.status(404).json(error.message)
+        res.status(404).send(error.message)
     }
 
 }
@@ -49,5 +49,7 @@ module.exports.auth_get = (req, res) => {
 }
 
 module.exports.logout_get = (req, res) => {
-    res.send('in here in reg')
+    console.log('in here');
+    res.cookie('jwt','',{maxAge:1})
+    res.status(200).send({ status: 'NOT_LOGGED_IN' })
 }

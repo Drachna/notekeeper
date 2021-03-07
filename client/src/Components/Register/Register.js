@@ -87,7 +87,7 @@ class Register extends React.Component {
     if (this.props.status !== 'LOGGED_IN') {
       return (
         <div>
-          <Navbar item={'Login'} linkTo={'/'} />
+          {/* <Navbar item={'Login'} linkTo={'/'} /> */}
           <div className="register">
             <h1 className="text-center">Register</h1>
             <form onSubmit={this.handleClick}>

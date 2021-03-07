@@ -4,7 +4,7 @@ import { checkAuthStatus, login } from '../../Store/actions/authActions';
 import Navbar from '../Layout/Navbar'
 import SideDrawer from '../Layout/Sidebar';
 import './login.css'
-
+import { Redirect, withRouter } from "react-router";
 class Login extends React.Component {
 
   componentDidMount() {
@@ -15,7 +15,8 @@ class Login extends React.Component {
     email: null,
     password: null,
     emailError: "",
-    passwordError: ""
+    passwordError: "",
+    redirect:''
   };
 
   validate = () => {
@@ -37,6 +38,9 @@ class Login extends React.Component {
       })
       return false
     }
+    this.setState({
+      redirect:'/displayNotes'
+    })
     return true
 
   }
@@ -47,7 +51,7 @@ class Login extends React.Component {
     })
   }
 
-  handleClick = (e) => {
+  handleClick = async(e) => {
     e.preventDefault()
     const validation = this.validate()
     if (validation) {
@@ -56,10 +60,13 @@ class Login extends React.Component {
         email: this.state.email,
         password: this.state.password
       }
-      this.props.login(data)
-      this.props.history.push('/displayNotes')
+      console.log('here in login');
+      await  this.props.login(data)
+      localStorage.setItem('auth','yes')
+      
+      console.log(this.props);
       if (this.props.status === 'LOGGED_IN'){
-        
+        // this.props.history.push('/displayNotes')
       }
 
     }
@@ -73,10 +80,10 @@ class Login extends React.Component {
   render() {
 
 console.log(this.props)
-    if (this.props.status !== 'LOGGED_IN') {
+    if (this.props.status!=='LOGGED_IN') {
       return (
         <div>
-          <Navbar item={'Register'} linkTo={'/register'} />
+          {/* <Navbar item={'Register'} linkTo={'/register'} /> */}
           <div className="login_page">
             <h1>Sign In</h1>
             <form onSubmit={this.handleClick}>
@@ -91,19 +98,23 @@ console.log(this.props)
               <div style={{ color: "red" }}>{this.state.passwordError}</div>
               <button type="submit" className="btn btn-primary">Sign In</button>
             </form>
+            <div className="text-danger">{this.props.errorMessage}</div>
           </div>
+
         </div>
       )
     }
     else {
-      return <SideDrawer />
+      // return null
+      return <Redirect to='/displayNotes'></Redirect>
     }
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    status: state.auth.status
+    status: state.auth.status,
+    errorMessage:state.auth.errorMessage
   }
 }
 
@@ -115,4 +126,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))

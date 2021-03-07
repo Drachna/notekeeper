@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,6 +17,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Note from '../Note/note'
 import DisplayNotes from '../DisplayNotes/DisplayNotes'
 import Button from '@material-ui/core/Button';
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchNotes, getArchiveNotes, getlistItems, getPinnedNotes, getReminder, resetState } from '../../Store/actions/handleNoteActions';
+import { checkAuthStatus, logOut } from '../../Store/actions/authActions';
+import { CircularProgress } from '@material-ui/core';
 
 const drawerWidth = 240;
 
@@ -92,13 +96,21 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 'auto',
     color:'white'
   },
+  '& li:hover':{
+    cursor: 'pointer',
+    color:'blue'
+  }
 }));
 
-export default function SideDrawer() {
+export default function SideDrawer(props) {
+  const dispatch=useDispatch()
+  const auth_state=useSelector(state=>state.auth.status)
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-
+useEffect(()=>{
+dispatch(checkAuthStatus())
+},[])
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -106,8 +118,34 @@ export default function SideDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  
+  const getTodoList = () => {
+    dispatch(getlistItems())
+  };
 
+  const getReminders = () => {
+    dispatch(getReminder())
+  };
+  const getArchiveNote = () => {
+    dispatch(getArchiveNotes())
+  };
+  const getPinnedNote = () => {
+    dispatch(getPinnedNotes())
+  };
+  const getNote = () => {
+    dispatch(fetchNotes())
+  };
+  const handleClick=async()=>{
+    await dispatch(logOut())
+    // await dispatch(resetState())
+    localStorage.clear()
+    setTimeout(()=>props.history.push('/'),3000)
+  }
   return (
+    
+<>
+    {auth_state==='NOT_LOGGED_IN'?<CircularProgress />:
+
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
@@ -131,7 +169,7 @@ export default function SideDrawer() {
           <Typography variant="h6" noWrap>
             Keeps
           </Typography>
-          <Button color="white" className={classes.toolbarButtons}>
+          <Button  className={classes.toolbarButtons} onClick={handleClick}>
 
             log out
             
@@ -160,32 +198,28 @@ export default function SideDrawer() {
         <List>
           <ListItem
           >
-            <ListItemIcon onClick={handleDrawerOpen}>{<MdNote className="icon" />}</ListItemIcon>
-            <ListItemText primary="Notes" primaryTypographyProps={{ variant: "subtitle2", classes: { subtitle2: classes.listText } }} />
+            <ListItemIcon onClick={getNote}>{<MdNote className="icon" style={{cursor:'pointer'}}/>}</ListItemIcon>
+            <ListItemText onClick={getNote} primary="Notes" style={{cursor:'pointer'}} primaryTypographyProps={{ variant: "subtitle2", classes: { subtitle2: classes.listText } }} />
           </ListItem>
           <ListItem
           >
-            <ListItemIcon>{<MdAlarm className="icon" />}</ListItemIcon>
-            <ListItemText primary="Reminders" primaryTypographyProps={{ variant: "subtitle2" }} />
+            <ListItemIcon onClick={getReminders}>{<MdAlarm className="icon" style={{cursor:'pointer'}}/>}</ListItemIcon>
+            <ListItemText onClick={getReminders} primary="Reminders" style={{cursor:'pointer'}} primaryTypographyProps={{ variant: "subtitle2" }} />
           </ListItem>
           <ListItem
           >
-            <ListItemIcon>{<MdLabelOutline className="icon" />}</ListItemIcon>
-            <ListItemText primary="Edit labels" primaryTypographyProps={{ variant: "subtitle2" }} />
+            <ListItemIcon onClick={getTodoList}>{<MdList className="icon" style={{cursor:'pointer'}}/>}</ListItemIcon>
+            <ListItemText onClick={getTodoList} primary="List Item" style={{cursor:'pointer'}} primaryTypographyProps={{ variant: "subtitle2" }} />
           </ListItem>
           <ListItem
 
-            to='/#archive'
+            
 
           >
-            <ListItemIcon>{<MdArchive className="icon" />}</ListItemIcon>
-            <ListItemText primary="Archive" primaryTypographyProps={{ variant: "subtitle2" }} />
+            <ListItemIcon onClick={getArchiveNote}>{<MdArchive className="icon" style={{cursor:'pointer'}} />}</ListItemIcon>
+            <ListItemText onClick={getArchiveNote} primary="Archive" style={{cursor:'pointer'}} primaryTypographyProps={{ variant: "subtitle2" }} />
           </ListItem>
-          <ListItem
-          >
-            <ListItemIcon>{<MdDelete className="icon" />}</ListItemIcon>
-            <ListItemText primary="Trash" primaryTypographyProps={{ variant: "subtitle2" }} />
-          </ListItem>
+        
         </List>
       </Drawer>
       <main className={classes.content}>
@@ -202,5 +236,8 @@ export default function SideDrawer() {
         <DisplayNotes />
       </main>
     </div>
+}
+</>
+   
   );
 }

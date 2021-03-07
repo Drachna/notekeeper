@@ -1,11 +1,10 @@
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap'
-import { MdAlarm, MdImage, MdArchive, MdLabelOutline, MdDelete, MdList, MdAddCircle } from "react-icons/md";
-import { BiUndo, BiRedo } from "react-icons/bi";
-import { IoIosColorPalette } from "react-icons/io";
+import { MdAddCircle } from "react-icons/md";
+
 import Popover from '@material-ui/core/Popover';
-import { RiPushpin2Line } from "react-icons/ri";
+
 import Colors from '../Colors/Colors'
 import Reminder from '../Reminder/Reminder'
 import Labels from '../Labels/Labels';
@@ -13,6 +12,8 @@ import './note.css'
 import { addNote, saveEditedNote } from '../../Store/actions/handleNoteActions';
 import { connect } from 'react-redux'
 import ListItems from '../ListItems/ListItems';
+import { toolBarList } from './ToolBarList'
+
 class Note extends Component {
 
   constructor(props) {
@@ -21,38 +22,28 @@ class Note extends Component {
       title: '',
       content: '',
       imageToAdd: '',
-      archive: '',
-      pinned: '',
+      archive: false,
+      pinned: false,
       listItems: [],
+      labels: [],
+      color:'white',
+      reminders: [],
       anchorEl: null,
       show: false
+      
     }
 
     console.log(this.props);
     if (this.props.noteToBeEdited !== null) {
       this.state = props.noteToBeEdited
-      console.log('in if');
+
     }
     else {
       this.state = this.intialState
-      console.log('in else', this.state);
     }
 
   }
 
-  // this.initialState = {
-  //   title: this.props.title,
-  //   content: this.props.content,
-  //   imageToAdd: this.props.imageToAdd,
-  //   archive: this.props.archive,
-  //   pinned: this.props.pinned,
-  //   // reminder:this.props.reminder,
-  //   // labels:this.props.labels,
-  //   listItems: this.props.listItems,
-  //   anchorEl: null,
-  //   show: false
-  // }
-  // state = this.initialState
   toggleArchive = () => {
     this.setState({
       archive: !this.state.archive
@@ -77,26 +68,27 @@ class Note extends Component {
       show: e.currentTarget.id
     })
   }
-  setimage = (e) => {
-    this.setState({
-      [e.target.name]: e.target.files[0]
-    })
-  }
+  
   closePopOver = () => {
     this.setState({
       anchorEl: null
     })
   }
 
+  resetState=()=>{
+    this.setState(() => this.intialState)
+  }
   setReminder = (data) => {
+    let reminders = [...this.state.reminders, data]
     this.setState({
-      reminder: data
+      reminders
     })
   }
 
   setLabel = (data) => {
+    let labels = [...this.state.labels, data]
     this.setState({
-      labels: data
+      labels
     })
   }
 
@@ -106,16 +98,45 @@ class Note extends Component {
     })
   }
 
-  addToList = (todo) => {
+  addToList = () => {
     const data = {
       done: false,
-      todo: todo
+      todo: this.state.content
     }
+    // console.log(data, this.state.listItems, 'asd');
     let listItems = [...this.state.listItems, data]
+    this.setState({
+      
+      content:'',
+      listItems
+    })
+  }
+
+  toggleStatus = (id) => {
+    let listItems = this.state.listItems.filter((item, index) => {
+      if (index === id) {
+        item.done = !item.done
+        return item
+      }
+      else {
+        return item
+      }
+    })
+    this.setState({
+      listItems
+    })
+
+  }
+
+  deleteTodo = (id) => {
+    let listItems = this.state.listItems.filter((item, index) => {
+      return index !== id
+    })
     this.setState({
       listItems
     })
   }
+
   renderPopOver = () => {
     if (this.state.show === 'reminder')
       return <Reminder setReminder={this.setReminder} />
@@ -130,179 +151,75 @@ class Note extends Component {
   handleClick = async () => {
 
     if (this.props.editNote) {
-
       await this.props.saveEditedNote(this.state)
     }
     else {
       var formData = new FormData();
-      const data = {
-        title: this.state.title,
-        content: this.state.content,
-        imageToAdd: this.state.imageToAdd,
-        archive: this.state.archive,
-        pinned: this.state.pinned,
-        listItems: this.state.listItems,
-      }
-      console.log(this.props, 'from notes');
-      formData.append('title', data.title)
-      formData.append('content', data.content)
-      formData.append('imageToAdd', data.imageToAdd)
-      formData.append('archive', data.archive)
-      formData.append('pinned', data.pinned)
-      formData.append('reminder', this.props.reminder)
-      formData.append('labels', this.props.labels)
-
-      console.log(this.props);
+      formData.append('title', this.state.title)
+      formData.append('content', this.state.content)
+      formData.append('imageToAdd', this.state.imageToAdd)
+      formData.append('archive', this.state.archive)
+      formData.append('pinned', this.state.pinned)
+      formData.append('reminders', JSON.stringify(this.state.reminders))
+      formData.append('labels', JSON.stringify(this.state.labels))
+      formData.append('listItems', JSON.stringify(this.state.listItems))
 
       await this.props.addNote(formData)
 
-      this.setState(() => this.initialState)
+      this.setState(() => this.intialState)
     }
   }
 
   render() {
-    console.log(this.state, 'state');
+  
     const open = Boolean(this.state.anchorEl);
     const id = open ? 'simple-popover' : undefined;
     return (
       <div className="noteBox">
-
-        <Card style={{ width: "30rem" }}>
-
+        <Card style={{ width: "30rem" ,background:this.state.color}}>
           <Card.Title>
-            <input className="title" type="text" value={this.state.title} id="title" autoComplete="off" placeholder="Title" onChange={this.handleChange}></input>
-
-            <OverlayTrigger
-              overlay={
-                <Tooltip id="pin">
-                  Pin note
-                </Tooltip>
-              }>
-              <RiPushpin2Line id="pin" style={this.state.pinned ? { background: 'black' } : { background: 'white' }} onClick={this.togglePin} />
-            </OverlayTrigger>
+            <input className="title" style={{background:this.state.color}} type="text" value={this.state.title} id="title" autoComplete="off" placeholder="Title" onChange={this.handleChange} />
+          
           </Card.Title>
 
           <Card.Text >
-            <input type="text" className="title" autoComplete="off" placeholder="Content" id="content" value={this.state.content} onChange={this.handleChange}></input>
+            <input type="text" style={{background:this.state.color}} className="title" autoComplete="off" placeholder="Content" id="content" value={this.state.content} onChange={this.handleChange}></input>
           </Card.Text>
           <Card.Body >
             <div>
-              {/* <ul className="lists"> */}
-             { this.state.listItems.map((item,index)=>{
-                return <ListItems key={index} toggleStatus={this.toggleStatus} deleteTodo={this.deleteTodo} itemData={item}/>
+              {this.state.listItems.map((item, index) => {
+                const data = {
+                  todo: item.todo,
+                  done: item.done,
+                  index: index
+                }
+                return <ListItems key={index} toggleStatus={this.toggleStatus} deleteTodo={this.deleteTodo} itemData={data} />
               })}
-              {/* </ul> */}
-              </div>
+
+            </div>
             <div >
-
-              <div style={{
-                display: 'inline-block',
-                marginRight: '8px',
-                borderRadius: '25px',
-                padding: '4px',
-                background: '#dee2e6'
-              }}>{this.state.labels}</div>
-              <div style={{
-                display: 'inline-block',
-                marginRight: '8px',
-                borderRadius: '25px',
-                padding: '4px',
-                background: '#dee2e6'
-              }}>{this.state.reminder}</div>
-
-               
+              {this.state.labels.map((label) => {
+                return < div className='arrDisplay'>{label}</div>
+              })}
+              {this.state.reminders.map((reminders) => {
+                return < div className='arrDisplay'>{reminders}</div>
+              })}
             </div>
 
-            <div className="toolbar">
+            <div className="toolbar">           
+              {toolBarList.map((tool, index) => {             
+                return <OverlayTrigger
+                  overlay={
+                    <Tooltip id={tool.id}>
+                      {tool.text}
+                    </Tooltip>
+                  }>
 
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="reminder">
-                    Remind Me
-                  </Tooltip>
-                }>
-                <MdAlarm id="reminder" onClick={this.showPopOver} className="icon" />
-              </OverlayTrigger>
+                  {React.cloneElement(tool.component[0], { onClick: this[`${tool.fName}`] })}
+                </OverlayTrigger>
+              })}
 
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="color">
-                    Change Color
-                  </Tooltip>
-                }>
-                <IoIosColorPalette id="color" className="icon" onClick={this.showPopOver} />
-              </OverlayTrigger>
-
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="image">
-                    Add image
-                  </Tooltip>
-                }>
-                <div className="imageset">
-
-                  <input id="file-input" name="imageToAdd" className="image-upload" onChange={this.setimage} type="file" />
-                  <label htmlFor="file-input">
-                    <MdImage id="image" className="icon" />
-                  </label>
-                </div>
-              </OverlayTrigger>
-
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="archive">
-                    Archive
-                  </Tooltip>
-                }>
-                <MdArchive id="archive" className="icon" onClick={this.toggleArchive} />
-              </OverlayTrigger>
-
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="label">
-                    Add label
-                  </Tooltip>
-                }>
-                <MdLabelOutline id="label" className="icon" onClick={this.showPopOver} />
-              </OverlayTrigger>
-
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="delete">
-                    Delete
-                  </Tooltip>
-                }>
-                <MdDelete id="delete" className="icon" onClick={this.showPopOver} />
-              </OverlayTrigger>
-
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="undo">
-                    Undo
-                  </Tooltip>
-                }>
-                <BiUndo id="undo" className="icon" onClick={this.showPopOver} />
-              </OverlayTrigger>
-
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="redo">
-                    Redo
-                  </Tooltip>
-                }>
-                <BiRedo id="redo" className="icon" onClick={this.showPopOver} />
-              </OverlayTrigger>
-
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="list">
-                    Add to list
-                  </Tooltip>
-                }>
-                <MdList id="list" className="icon" onClick={()=>{this.addToList(this.state.content)}} />
-              </OverlayTrigger>
-
-              <MdAddCircle className="addNote justify-end" onClick={this.handleClick}/>
+              <MdAddCircle className="addNote justify-end" onClick={this.handleClick} />
 
               <Popover
                 id={id}
@@ -320,11 +237,12 @@ class Note extends Component {
               >
                 {this.renderPopOver()}
               </Popover>
-
+              
             </div>
 
           </Card.Body >
         </Card>
+
       </div>
     );
   }
@@ -332,14 +250,6 @@ class Note extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    // title: state.note.title,
-    // content: state.note.content,
-    reminder: state.note.reminder,
-    labels: state.note.labels,
-    // imageToAdd: state.note.imageToAdd,
-    // pinned: state.note.pinned,
-    // archive: state.note.archive,
-    // listItems: state.note.listItems,
     noteToBeEdited: state.note.noteToBeEdited,
     editNote: state.note.editNote
 

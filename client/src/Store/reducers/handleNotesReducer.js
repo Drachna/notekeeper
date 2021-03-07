@@ -15,6 +15,11 @@ const handleNotesReducer = (state = initialState, action) => {
                 ...state,
                 notes: action.payload
             }
+        case 'RESET':
+            return{
+                ...state,
+                notes:[]
+            }
 
         case NOTE_CREATED:
             return {
@@ -22,8 +27,10 @@ const handleNotesReducer = (state = initialState, action) => {
                 notes: [...state.notes, action.payload]
             }
         default:
-            console.log('in here');
-            return state
+            
+            return {
+                ...state
+            }
     }
 
 }

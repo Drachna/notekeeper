@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { addReminder } from '../../Store/actions/noteActions';
 class Reminder extends Component {
   state = {
-    reminder: ''
+    reminder: new Date
   }
   handleChange = (e) => {
 console.log(e.target.value);
@@ -29,8 +29,7 @@ console.log(e.target.value);
               id="datetime-local"
               label="Choose Date and Time"
               type="datetime-local"
-              // defaultValue="2017-05-24T10:30"
-
+              value={this.state.reminder}
               onChange={this.handleChange}
               InputLabelProps={{
                 shrink: true,

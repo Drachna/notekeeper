@@ -15,11 +15,10 @@ class Labels extends Component {
   }
 
   handleClick = async() => {
-    console.log(this.state);
-    // await this.props.addLabel(this.state)
-    await this.props.setLabel(this.state.label)
-    
-    console.log(this.props);
+    this.setState({
+      label:''
+    })
+    await this.props.setLabel(this.state.label)    
   }
 
   render() {
@@ -38,7 +37,7 @@ class Labels extends Component {
               }}
             />
 
-            <Button color="primary" onClick={this.handleClick}>Add Reminder</Button>
+            <Button color="primary" onClick={this.handleClick}>Add Label</Button>
           </form>
         </Card>
       </div>

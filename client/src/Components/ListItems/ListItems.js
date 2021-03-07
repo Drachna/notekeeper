@@ -8,23 +8,24 @@ class ListItems extends Component {
     item: this.props.itemData.todo
   }
   toggleStatus = async (e) => {
-    await this.setState({
-      done: !this.state.done
-    })
-    console.log(this.state);
+    this.props.toggleStatus(this.props.itemData.index)
+    // console.log(this.state);
+  }
+  deleteTodo=async()=>{
+    this.props.deleteTodo(this.props.itemData.index)
   }
   render() {
-    console.log(this.props,'from list');
+    
     return (
       <div>
         
-        <li className="lists">
+        <li className="lists" key={this.props.itemData.index}>
         <InputGroup className="mb-3">
           <InputGroup.Prepend>
             <InputGroup.Checkbox onClick={this.toggleStatus} />
           </InputGroup.Prepend>
-          <FormControl aria-label="Text input with checkbox" value={this.state.item} />
-          <MdDelete style={{width:'20px',height:'35px'}}></MdDelete>
+          <FormControl aria-label="Text input with checkbox" value={this.props.itemData.todo} />
+          <MdDelete style={{width:'20px',height:'35px'}} onClick={this.deleteTodo}></MdDelete>
         </InputGroup>
         </li>
       </div>

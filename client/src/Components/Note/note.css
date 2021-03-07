@@ -74,11 +74,11 @@ margin-right: auto; */
     outline: none;
 }
 .noteBox #pin{
-    float: right;
+    /* float: right;
     margin-top:2%;
     margin-right: 10px;
     width:30px;
-    height: 25px;
+    height: 25px; */
     /* right:20px; */
 }
 .card-body{
@@ -86,10 +86,7 @@ margin-right: auto; */
 }
 
 
-/* .modal-open{
-    position:absolute;
-   top: 60%;
-} */
+
 
 .image-upload{
     display: none;
@@ -103,3 +100,11 @@ margin-right: auto; */
    
 }
 
+.arrDisplay{
+    display: inline-block;
+    margin-Right: 8px;
+    border: black;
+    border-radius: 25px;
+    padding: 4px;
+    background: #dee2e6;
+}

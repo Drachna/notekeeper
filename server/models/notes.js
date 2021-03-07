@@ -15,7 +15,7 @@ const noteSchema = mongoose.Schema({
     content: {
         type: String
     },
-    list_item: {
+    listItems: {
         type: [],
         default: []
     },
@@ -30,7 +30,7 @@ const noteSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    reminder: {
+    reminders: {
         type: [],
         default: []
     },
