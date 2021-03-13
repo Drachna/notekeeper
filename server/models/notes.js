@@ -5,7 +5,7 @@ const noteSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        // required: true
+        required: true
 
     },
     title: {
@@ -19,12 +19,14 @@ const noteSchema = mongoose.Schema({
         type: [],
         default: []
     },
-    img: {
-        type: String
-    },
+    
     archive: {
         type: Boolean,
         default: false
+    },
+    color: {
+        type: String,
+        default: 'white'
     },
     pinned: {
         type: Boolean,

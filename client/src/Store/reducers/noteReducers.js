@@ -1,7 +1,8 @@
 import {
-    NOTE_CREATED,
+    NOTE_RESET,
     ADD_REMINDER,
-    ADD_LABEL
+    ADD_LABEL,
+    NOTE_EDITED
 } from '../actionTypes'
 
 const initialState = {
@@ -19,20 +20,13 @@ const initialState = {
 
 const noteReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'NOTE_EDITED':
+        case NOTE_EDITED:
 
             return {
                 
                 noteToBeEdited:action.payload,
                  editNote:true
-                // title: action.payload.title,
-                // content: action.payload.content,
-                // imageToAdd: action.payload.imageToAdd,
-                // archive: action.payload.archive,
-                // pinned: action.payload.pinned,
-                // reminder: action.payload.reminder,
-                // labels: action.payload.labels,
-                // listItems: action.payload.listItems,
+                
                
             }
         case ADD_REMINDER:
@@ -49,7 +43,7 @@ const noteReducer = (state = initialState, action) => {
                     ...state,
                     labels:action.payload.label
                 }
-            case 'NOTE_RESET':
+            case NOTE_RESET:
                 return{
                     state:initialState
                 }

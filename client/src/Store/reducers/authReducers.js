@@ -3,13 +3,14 @@ import {
     LOGIN_SUCCESS,
     CHECK_AUTH_STATUS,
     REGISTER_FAILURE,
-    REGISTER_SUCCESS
+    REGISTER_SUCCESS,
+    LOGGED_OUT
 } from '../actionTypes'
 
 const initialState = {
     status: 'NOT_LOGGED_IN',
-    failed:false,
-    errorMessage:null
+    failed: false,
+    errorMessage: null
 }
 
 const authReducer = (state = initialState, action) => {
@@ -19,14 +20,14 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 status: action.payload.status
             }
-        case 'LOGGED_OUT':
+        case LOGGED_OUT:
             return {
-                
+
                 ...state,
-                status:action.payload.status
+                status: action.payload.status
             }
         case LOGIN_SUCCESS:
-            console.log(state);
+
             return {
                 ...state,
                 status: action.payload.status,
@@ -48,13 +49,13 @@ const authReducer = (state = initialState, action) => {
         case REGISTER_FAILURE:
             return {
                 ...state,
-                status:'note',
-                failed:true,
-                errorMessage: 'afgdfs'
+
+                failed: true,
+
             }
-        default:{
-             
-            return {...state}
+        default: {
+
+            return { ...state }
         }
     }
 

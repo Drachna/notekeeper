@@ -10,8 +10,7 @@ const requireAuthentication = async (req, res, next) => {
                     res.send('Invalid User')
                 }
                 else {
-                    req.user_id=decodedToken.id
-                    console.log(decodedToken,req.body);
+                    req.user_id=decodedToken.id                    
                     next()
                 }
             })

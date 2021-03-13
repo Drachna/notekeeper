@@ -1,14 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { checkAuthStatus, login } from '../../Store/actions/authActions';
-import Navbar from '../Layout/Navbar'
-import SideDrawer from '../Layout/Sidebar';
 import './login.css'
 import { Redirect, withRouter } from "react-router";
 class Login extends React.Component {
 
-  componentDidMount() {
-    this.props.checkAuthStatus()
+  async componentDidMount() {
+    await this.props.checkAuthStatus()
   }
 
   state = {
@@ -16,7 +14,7 @@ class Login extends React.Component {
     password: null,
     emailError: "",
     passwordError: "",
-    redirect:''
+    redirect: ''
   };
 
   validate = () => {
@@ -39,7 +37,7 @@ class Login extends React.Component {
       return false
     }
     this.setState({
-      redirect:'/displayNotes'
+      redirect: '/displayNotes'
     })
     return true
 
@@ -51,7 +49,7 @@ class Login extends React.Component {
     })
   }
 
-  handleClick = async(e) => {
+  handleClick = async (e) => {
     e.preventDefault()
     const validation = this.validate()
     if (validation) {
@@ -60,14 +58,7 @@ class Login extends React.Component {
         email: this.state.email,
         password: this.state.password
       }
-      console.log('here in login');
-      await  this.props.login(data)
-      localStorage.setItem('auth','yes')
-      
-      console.log(this.props);
-      if (this.props.status === 'LOGGED_IN'){
-        // this.props.history.push('/displayNotes')
-      }
+      await this.props.login(data)
 
     }
     else {
@@ -79,8 +70,8 @@ class Login extends React.Component {
 
   render() {
 
-console.log(this.props)
-    if (this.props.status!=='LOGGED_IN') {
+    // console.log(this.props)
+    if (this.props.status !== 'LOGGED_IN') {
       return (
         <div>
           {/* <Navbar item={'Register'} linkTo={'/register'} /> */}
@@ -88,12 +79,22 @@ console.log(this.props)
             <h1>Sign In</h1>
             <form onSubmit={this.handleClick}>
               <div className="form-group">
-                <input type="email" className="form-control" id="email" name="email" onChange={this.handleChange} placeholder="Enter email" />
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"           
+                  onChange={this.handleChange}
+                  placeholder="Enter email" />
                 <div style={{ color: "red" }}>{this.state.emailError}</div>
               </div>
 
               <div className="form-group">
-                <input type="password" className="form-control" id="password" name="password" onChange={this.handleChange} placeholder="Password" />
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  onChange={this.handleChange}
+                  placeholder="Password" />
               </div>
               <div style={{ color: "red" }}>{this.state.passwordError}</div>
               <button type="submit" className="btn btn-primary">Sign In</button>
@@ -105,7 +106,6 @@ console.log(this.props)
       )
     }
     else {
-      // return null
       return <Redirect to='/displayNotes'></Redirect>
     }
   }
@@ -114,7 +114,7 @@ console.log(this.props)
 const mapStateToProps = (state) => {
   return {
     status: state.auth.status,
-    errorMessage:state.auth.errorMessage
+    errorMessage: state.auth.errorMessage
   }
 }
 

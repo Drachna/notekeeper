@@ -2,7 +2,6 @@ import {FETCH_NOTES,NOTE_CREATED} from '../actionTypes'
 import axios from'axios'
 
 export const fetchNoteSuccess=(data)=>{
-    
     return {
         type:FETCH_NOTES,
         payload:data
@@ -10,10 +9,8 @@ export const fetchNoteSuccess=(data)=>{
 }
 
 export const resetState=()=>{
-    
     return {
-        type:'RESET'
-        
+        type:'RESET'      
     }
 }
 
@@ -53,7 +50,7 @@ export const saveEditedNote=(data)=>{
      
         axios.post('/api/notes/edit',data)
         .then(res=>{
-            console.log(res.data);
+            
             dispatch(fetchNotes())
         })
     }
@@ -64,7 +61,7 @@ export const deleteNote=(id)=>{
       
         axios.delete(`/api/note/deleteNote/${id}`)
         .then(res=>{
-            console.log(res.data);
+            
             dispatch(fetchNotes())
         })
     }
@@ -101,10 +98,10 @@ export const getPinnedNotes=()=>{
 
 export const getlistItems=()=>{
     return (dispatch)=>{
-        console.log('in listitem fun');
+        
         axios.get('/api/notes/getlistItems')
         .then(res=>{
-            console.log(res.data);
+            
             dispatch(fetchNoteSuccess(res.data))
         })
     }

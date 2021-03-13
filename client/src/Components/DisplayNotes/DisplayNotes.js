@@ -11,28 +11,22 @@ import './cardStyle.css'
 import Note from '../Note/note';
 import { editNote, resetData } from '../../Store/actions/noteActions';
 import ListItems from '../ListItems/ListItems';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-const cardStyle = {
-  display: 'block',
-  width: '60vw',
-  transitionDuration: '0.3s',
-  margin: 'auto',
-  marginTop: '10px',
+import Moment from 'react-moment';
 
-}
+
+
 class DisplayNotes extends Component {
-  async componentDidMount () {
+  async componentDidMount() {
     await this.props.fetchNotes()
-    this.setState({
-      loading:false
-    })
+  
   }
   state = {
     notes: [],
     noteToEdit: '',
-    showModal: false,
-    loading:true
+    showModal: false
+    
   }
 
   handleEdit = (note) => {
@@ -43,8 +37,7 @@ class DisplayNotes extends Component {
     this.props.editNote(note)
   }
 
-  deleteNotes=(note)=>{
-    console.log('in delete',note._id);
+  deleteNotes = (note) => {
     this.props.deleteNote(note._id)
   }
 
@@ -52,16 +45,21 @@ class DisplayNotes extends Component {
     this.setState({
       showModal: false
     })
-    // this.props.resetData()
+    this.props.resetData()
 
   }
 
   renderNotes = () => {
-    // console.log(this.props.notes.reminder);
     return this.props.notes.map((note) => {
       return (
         <div key={note._id}>
-          <Card variant="outlined" m={2} style={cardStyle}>
+          <Card variant="outlined" m={2} style={{
+            background: note.color,
+            width: '50vw',
+            transitionDuration: '0.3s',
+            margin: 'auto',
+            marginTop: '10px'
+          }}>
             <CardContent>
               <Typography style={{ textAlign: 'left' }} variant="h6" component="h2">
                 {note.title}
@@ -70,16 +68,16 @@ class DisplayNotes extends Component {
                 {note.content}
               </Typography>
               <div>
-              
-             { note.listItems.map((item,index)=>{
-                return <ListItems key={index} toggleStatus={this.toggleStatus} deleteTodo={this.deleteTodo} itemData={item}/>
-              })}
-            
-              </div>
-              <Typography style={{ textAlign: 'left' }} component="p">
 
-                {note.labels.map(label => {
-                  return <div style={{
+                {note.listItems.map((item, index) => {
+                  return <ListItems key={index} toggleStatus={this.toggleStatus} deleteTodo={this.deleteTodo} itemData={item} />
+                })}
+
+              </div>
+              <Typography style={{ textAlign: 'left' }} component="div">
+
+                {note.labels.map((label, index) => {
+                  return <div key={index} style={{
                     display: 'inline-block',
                     marginRight: '8px',
                     borderRadius: '25px',
@@ -87,21 +85,25 @@ class DisplayNotes extends Component {
                     background: '#dee2e6'
                   }}>{label}</div>
                 })}
-                {note.reminders.map(reminder => {
-                  return <div style={{
-                    display: 'inline-block',
-                    marginRight: '8px',
-                    borderRadius: '25px',
-                    padding: '4px',
-                    background: '#dee2e6'
-                  }}>{reminder}</div>
+                {note.reminders.map((reminder, index) => {
+                  return <div
+                    key={index}
+                    style={{
+                      display: 'inline-block',
+                      marginRight: '8px',
+                      borderRadius: '25px',
+                      padding: '4px',
+                      background: '#dee2e6'
+                    }}>
+                    <Moment date={reminder}></Moment>
+                  </div>
                 })}
               </Typography>
             </CardContent>
             <CardActions >
 
               <Button size="small" onClick={() => { this.handleEdit(note) }}>Edit</Button>
-              <Button size="small" onClick={()=>{this.deleteNotes(note)}}>Delete</Button>
+              <Button size="small" onClick={() => { this.deleteNotes(note) }}>Delete</Button>
             </CardActions>
 
 
@@ -114,15 +116,17 @@ class DisplayNotes extends Component {
   render() {
     return (
       <div className="grid">
-        {/* {this.props.notes.length>0 && this.renderNotes()} */}
-{this.props.notes?this.renderNotes():<CircularProgress />}
-        <Modal show={this.state.showModal} onHide={this.handleClose} style={{ marginTop: '10%' }}>
+       
+        {this.props.notes ? this.renderNotes() : <CircularProgress />}
+        <Modal
+          show={this.state.showModal}
+          onHide={this.handleClose}
+          style={{ marginTop: '10%' }}>
           <Modal.Header style={{ background: 'black' }}>
             <Modal.Title style={{ color: 'white' }}>Edit</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Note />
-
           </Modal.Body>
         </Modal>
       </div>
@@ -142,7 +146,7 @@ const mapDispatchToProps = (dispatch, data) => {
   return {
     fetchNotes: () => dispatch(fetchNotes()),
     editNote: (data) => dispatch(editNote(data)),
-    deleteNote:(id)=>dispatch(deleteNote(id)),
+    deleteNote: (id) => dispatch(deleteNote(id)),
     resetData: () => dispatch(resetData())
   }
 }

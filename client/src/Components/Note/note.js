@@ -2,9 +2,7 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap'
 import { MdAddCircle } from "react-icons/md";
-
 import Popover from '@material-ui/core/Popover';
-
 import Colors from '../Colors/Colors'
 import Reminder from '../Reminder/Reminder'
 import Labels from '../Labels/Labels';
@@ -13,6 +11,8 @@ import { addNote, saveEditedNote } from '../../Store/actions/handleNoteActions';
 import { connect } from 'react-redux'
 import ListItems from '../ListItems/ListItems';
 import { toolBarList } from './ToolBarList'
+import Moment from 'react-moment';
+import { Snackbar } from '@material-ui/core';
 
 class Note extends Component {
 
@@ -21,19 +21,20 @@ class Note extends Component {
     this.intialState = {
       title: '',
       content: '',
-      imageToAdd: '',
       archive: false,
       pinned: false,
       listItems: [],
       labels: [],
-      color:'white',
+      color: 'white',
       reminders: [],
       anchorEl: null,
-      show: false
-      
+      show: false,
+      showNotification: false,
+      message: ''
+
     }
 
-    console.log(this.props);
+
     if (this.props.noteToBeEdited !== null) {
       this.state = props.noteToBeEdited
 
@@ -46,13 +47,18 @@ class Note extends Component {
 
   toggleArchive = () => {
     this.setState({
-      archive: !this.state.archive
+      archive: !this.state.archive,
+      showNotification: true,
+      message: this.state.archive ? 'Action Undone' : 'Note archieved'
     })
+
   }
 
   togglePin = () => {
     this.setState({
-      pinned: !this.state.pinned
+      pinned: !this.state.pinned,
+      showNotification: true,
+      message: this.state.pinned ? 'Action Undone' : 'Note Pinned'
     })
   }
 
@@ -68,14 +74,14 @@ class Note extends Component {
       show: e.currentTarget.id
     })
   }
-  
+
   closePopOver = () => {
     this.setState({
       anchorEl: null
     })
   }
 
-  resetState=()=>{
+  resetState = () => {
     this.setState(() => this.intialState)
   }
   setReminder = (data) => {
@@ -103,11 +109,10 @@ class Note extends Component {
       done: false,
       todo: this.state.content
     }
-    // console.log(data, this.state.listItems, 'asd');
+
     let listItems = [...this.state.listItems, data]
     this.setState({
-      
-      content:'',
+      content: '',
       listItems
     })
   }
@@ -147,7 +152,11 @@ class Note extends Component {
     else if (this.state.show === 'label')
       return <Labels setLabel={this.setLabel} />
   }
-
+  handleClose = () => {
+    this.setState({
+      showNotification: false
+    })
+  }
   handleClick = async () => {
 
     if (this.props.editNote) {
@@ -157,9 +166,9 @@ class Note extends Component {
       var formData = new FormData();
       formData.append('title', this.state.title)
       formData.append('content', this.state.content)
-      formData.append('imageToAdd', this.state.imageToAdd)
       formData.append('archive', this.state.archive)
       formData.append('pinned', this.state.pinned)
+      formData.append('color', this.state.color)
       formData.append('reminders', JSON.stringify(this.state.reminders))
       formData.append('labels', JSON.stringify(this.state.labels))
       formData.append('listItems', JSON.stringify(this.state.listItems))
@@ -171,19 +180,34 @@ class Note extends Component {
   }
 
   render() {
-  
+
     const open = Boolean(this.state.anchorEl);
     const id = open ? 'simple-popover' : undefined;
     return (
       <div className="noteBox">
-        <Card style={{ width: "30rem" ,background:this.state.color}}>
+        <Card style={{ width: "30rem", background: this.state.color }}>
           <Card.Title>
-            <input className="title" style={{background:this.state.color}} type="text" value={this.state.title} id="title" autoComplete="off" placeholder="Title" onChange={this.handleChange} />
-          
+            <input className="title"
+              style={{ background: this.state.color }}
+              type="text"
+              value={this.state.title}
+              id="title"
+              autoComplete="off"
+              placeholder="Title"
+              onChange={this.handleChange} />
+
           </Card.Title>
 
           <Card.Text >
-            <input type="text" style={{background:this.state.color}} className="title" autoComplete="off" placeholder="Content" id="content" value={this.state.content} onChange={this.handleChange}></input>
+            <input
+              type="text"
+              style={{ background: this.state.color }}
+              className="title"
+              autoComplete="off"
+              placeholder="Content"
+              id="content"
+              value={this.state.content}
+              onChange={this.handleChange}></input>
           </Card.Text>
           <Card.Body >
             <div>
@@ -202,13 +226,16 @@ class Note extends Component {
                 return < div className='arrDisplay'>{label}</div>
               })}
               {this.state.reminders.map((reminders) => {
-                return < div className='arrDisplay'>{reminders}</div>
+                return < div className='arrDisplay'>
+                  <Moment date={reminders}></Moment>
+                </div>
               })}
             </div>
 
-            <div className="toolbar">           
-              {toolBarList.map((tool, index) => {             
+            <div className="toolbar">
+              {toolBarList.map((tool, index) => {
                 return <OverlayTrigger
+                  key={index}
                   overlay={
                     <Tooltip id={tool.id}>
                       {tool.text}
@@ -219,7 +246,7 @@ class Note extends Component {
                 </OverlayTrigger>
               })}
 
-              <MdAddCircle className="addNote justify-end" onClick={this.handleClick} />
+              <MdAddCircle className="addNote" onClick={this.handleClick} />
 
               <Popover
                 id={id}
@@ -237,7 +264,19 @@ class Note extends Component {
               >
                 {this.renderPopOver()}
               </Popover>
-              
+
+
+              <Snackbar
+                open={this.state.showNotification}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                onClose={this.handleClose}
+                autoHideDuration={3000}
+                message={this.state.message}>
+              </Snackbar>
+
             </div>
 
           </Card.Body >

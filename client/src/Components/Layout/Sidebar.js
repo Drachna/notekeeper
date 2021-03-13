@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
-import { MdAlarm, MdNote, MdArchive, MdLabelOutline, MdDelete, MdList } from "react-icons/md";
+import { MdAlarm, MdNote, MdArchive,  MdList } from "react-icons/md";
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -76,21 +76,15 @@ const useStyles = makeStyles((theme) => ({
    
     display: 'flex',
     alignItems: 'center',
-    // justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
+    
     ...theme.mixins.toolbar,
   },
   content: {
-    // flexGrow: 1,
-    // display: 'flex',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // padding: theme.spacing(3),
+    
     flexGrow: 1,
     padding: theme.spacing(3),
-    //  ...theme.mixins.toolbar,
-
+   
   },
   toolbarButtons: {
     marginLeft: 'auto',

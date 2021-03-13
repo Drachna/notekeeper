@@ -24,3 +24,7 @@ export const  ADD_REMINDER='ADD_REMINDER'
 export const  ADD_LABEL='ADD_LABEL'
 
 export const GET_REMINDER='GET_REMINDER'
+export const LOGGED_OUT='LOGGED_OUT'
+export const RESET='RESET'
+export const NOTE_EDITED='NOTE_EDITED'
+export const NOTE_RESET='NOTE_RESET'

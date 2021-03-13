@@ -7,12 +7,12 @@ const userSchema = mongoose.Schema({
     },
     email: {
         type: String,
-        required: [true, "email cannot be empty"]
+        required: [true, "Email cannot be empty"]
 
     },
     password: {
         type: String,
-        required: [true, "password is required"]
+        required: [true, "Password is required"]
     }
 
 
@@ -26,7 +26,7 @@ userSchema.pre('save', async function (next) {
 
 userSchema.methods.checkPassword = async function (password) {
     const result = await bcrypt.compare(password, this.password)
-    console.log('bcrypt pass match', result);
+    
     return result
 }
 

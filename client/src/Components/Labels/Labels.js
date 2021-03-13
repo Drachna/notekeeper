@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Card } from 'react-bootstrap'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { connect } from 'react-redux'
-import { addLabel } from '../../Store/actions/noteActions';
+
 class Labels extends Component {
   state = {
     label: ''
@@ -45,15 +44,6 @@ class Labels extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    labels: state.note.labels
-  }
-}
-const mapDispatchToProps = (dispatch,ownProps) => {
-  return {
-    addLabel: (ownProps) => dispatch(addLabel(ownProps))
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Labels);
+
+export default Labels;
 

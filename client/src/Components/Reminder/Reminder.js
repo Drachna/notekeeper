@@ -2,14 +2,13 @@ import Button from '@material-ui/core/Button';
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap'
 import TextField from '@material-ui/core/TextField';
-import { connect } from 'react-redux'
-import { addReminder } from '../../Store/actions/noteActions';
+
+
 class Reminder extends Component {
   state = {
-    reminder: new Date
+    reminder: new Date()
   }
   handleChange = (e) => {
-console.log(e.target.value);
      this.setState({
       reminder: e.target.value
     })
@@ -45,18 +44,9 @@ console.log(e.target.value);
 }
 
 
-const mapStateToProps = (state) => {
-  return {
-    reminder: state.note.reminder
-  }
-}
-const mapDispatchToProps = (dispatch,ownProps) => {
-  return {
-    // addReminder: (ownProps) => dispatch(addReminder(ownProps))
-  }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Reminder);
+
+export default Reminder;
 
 
 

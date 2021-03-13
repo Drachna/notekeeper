@@ -1,9 +1,7 @@
 import React from 'react'
 import { checkAuthStatus, register } from '../../Store/actions/authActions';
 import { connect } from 'react-redux'
-import Navbar from '../Layout/Navbar'
-import SideDrawer from '../Layout/Sidebar';
-
+import { Redirect, withRouter } from "react-router";
 class Register extends React.Component {
   initialState = {
     email: null,
@@ -29,23 +27,23 @@ class Register extends React.Component {
     let passwordError = ""
     let repeat_passwordError = ""
     if (!this.state.email) {
-      emailError = "email cant be empty"
+      emailError = "This field is required"
     }
 
     if (!this.state.userName) {
-      nameError = "name cant be empty"
+      nameError = "This field is required"
     }
 
     if (!this.state.password) {
-      passwordError = "password cant be empty"
+      passwordError = "This field is required"
     }
 
     if (!this.state.repeat_password) {
-      repeat_passwordError = "repeat_password cant be empty"
+      repeat_passwordError = "This field is required"
     }
 
     if (this.state.password !== this.state.repeat_password) {
-      repeat_passwordError = " password dont match"
+      repeat_passwordError = "Password does not match"
     }
 
     if (emailError || nameError || passwordError || repeat_passwordError) {
@@ -74,14 +72,15 @@ class Register extends React.Component {
       await this.props.register(data)
 
       this.setState(() => this.initialState)
-      console.log(this.props);
-     
+      // this.history.push('/displayNotes')
+      // console.log(this.props);
+
 
     }
     else {
       console.log("validation errror");
     }
-  
+
   }
   render() {
     if (this.props.status !== 'LOGGED_IN') {
@@ -92,33 +91,43 @@ class Register extends React.Component {
             <h1 className="text-center">Register</h1>
             <form onSubmit={this.handleClick}>
               <div className="form-group">
-                {/* <label htmlFor="email">Email address</label> */}
-                <input type="email" className="form-control"
-                  id="email" name="email"
-
-                  placeholder="Enter email" onChange={this.handleChange}
+            
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  placeholder="Enter email"
+                  onChange={this.handleChange}
                 />
                 <div style={{ color: "red" }}>{this.state.emailError}</div>
               </div>
               <div className="form-group">
-                {/* <label htmlFor="name">Username</label> */}
-                <input type="text" className="form-control"
-                  id="userName" name="userName"
-                  placeholder="Username" onChange={this.handleChange} />
+              
+                <input type="text"
+                  className="form-control"
+                  id="userName"
+                  placeholder="Username"
+                  onChange={this.handleChange} />
                 <div style={{ color: "red" }}>{this.state.nameError}</div>
               </div>
               <div className="form-group">
-                {/* <label htmlFor="password">Password</label> */}
-                <input type="password" className="form-control"
-                  id="password" name="password"
-                  placeholder="Password" onChange={this.handleChange} />
+                
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  placeholder="Password"
+                  onChange={this.handleChange} />
                 <div style={{ color: "red" }}>{this.state.passwordError}</div>
               </div>
               <div className="form-group">
-                {/* <label htmlFor="password"> Confirm Password</label> */}
-                <input type="password" className="form-control"
+            
+                <input
+                  type="password"
+                  className="form-control"
                   id="repeat_password"
-                  name="repeat_password" placeholder="Confirm Password" onChange={this.handleChange} />
+                  placeholder="Confirm Password"
+                  onChange={this.handleChange} />
                 <div style={{ color: "red" }}>{this.state.repeat_passwordError}</div>
               </div>
 
@@ -129,7 +138,7 @@ class Register extends React.Component {
       )
     }
     else {
-      return <SideDrawer/>
+      return <Redirect to='/displayNotes'></Redirect>
     }
   }
 }
@@ -148,4 +157,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Register))

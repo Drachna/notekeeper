@@ -1,4 +1,4 @@
-import { FETCH_NOTES, NOTE_CREATED } from '../actionTypes'
+import { FETCH_NOTES, NOTE_CREATED,RESET } from '../actionTypes'
 
 const initialState = {
     notes: [],
@@ -10,12 +10,12 @@ const handleNotesReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case FETCH_NOTES:
-            // console.log('in here');
+            
             return {
                 ...state,
                 notes: action.payload
             }
-        case 'RESET':
+        case RESET:
             return{
                 ...state,
                 notes:[]
